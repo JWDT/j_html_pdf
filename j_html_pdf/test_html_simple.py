@@ -82,6 +82,10 @@ class TestHtmlSimple(unittest.TestCase):
             'email': 'john@example.com',
             'website': 'https://jwdt.co.uk'
         }
+    test_files_empty = (
+        'basic_html_template.html',
+        'complex_html_template.html'
+    )
 
     def test_all_empty(self):
         self.assertRaises(AttributeError, HtmlReport)
@@ -98,3 +102,22 @@ class TestHtmlSimple(unittest.TestCase):
             self.assertEqual(sample, HtmlReport(data=self.test_data_1, template=sample).to_html())
         for sample, result in self.test_html_1.items():
             self.assertEqual(result, HtmlReport(data=self.test_data_1, template=sample).to_html())
+
+    def test_with_just_template_file(self):
+        for file_name in self.test_files_empty:
+            with open('test_data/' + file_name) as file:
+                self.assertEqual(file.read(), HtmlReport(template_file='test_data/' + file_name).to_html())
+                # HtmlReport(template_file='test_data/' + file_name).to_pdf('test_data/' + file_name + '.pdf')
+
+    # def test_with_template_file_and_data(self):
+    #     with open('test_data/basic_html_template_with_output.html') as output_file:
+    #         self.assertEqual(output_file.read(),
+    #                          HtmlReport(self.test_data_1, template_file='test_data/basic_html_template_with_data.html')
+    #                          .to_html())
+            # HtmlReport(data=self.test_data_1, template_file='test_data/basic_html_template_with_data.html').\
+            #     to_pdf('test_data/basic_html_template_with_output.html.pdf')
+        # with open('test_data/basic_html_template_with_output.html.pdf', mode='rb') as output_file:
+        #     self.assertEqual(output_file.read(),
+        #                     HtmlReport(self.test_data_1, template_file='test_data/basic_html_template_with_data.html')
+        #                      .to_pdf())
+        # Apparently you can't test PDF files, as they have a "created date" somewhere which messes up this.
